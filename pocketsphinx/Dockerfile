@@ -1,8 +1,7 @@
-FROM jbender/sphinxbase:5prealpha
+FROM kai5263499/sphinxbase:latest
 MAINTAINER Jonathan Bender <jlbender@gmail.com>
 
 ENV POCKETSPHINX pocketsphinx-5prealpha
-
 ADD ${POCKETSPHINX}.tar.gz /sphinx/
 
 RUN mv /sphinx/${POCKETSPHINX} /sphinx/pocketsphinx
