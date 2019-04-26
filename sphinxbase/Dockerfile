@@ -1,5 +1,5 @@
 FROM debian:8
-MAINTAINER Jonathan Bender <jlbender@gmail.com>
+MAINTAINER Wes Widner <kai5263499@gmail.com>
 
 ENV SPHINXBASE sphinxbase-5prealpha
 
