@@ -1,18 +1,20 @@
+FROM jrottenberg/ffmpeg:3.3-alpine AS ffmpeg
 FROM kai5263499/sphinxbase:latest
-MAINTAINER Jonathan Bender <jlbender@gmail.com>
-
-ENV POCKETSPHINX pocketsphinx-5prealpha
-ADD ${POCKETSPHINX}.tar.gz /sphinx/
-
-RUN mv /sphinx/${POCKETSPHINX} /sphinx/pocketsphinx
-
-WORKDIR /sphinx/pocketsphinx
+LABEL MAINTAINER="Wes Widner <kai5263499@gmail.com>"
 
 RUN echo "==> Updating and installing packages" && \
     apt-get update && \
-    apt-get install -y build-essential gcc automake autoconf libtool && \
-    echo "==> Installing Sphinx" && \
-    ./configure --with-swig-python && \
+    apt-get install -y build-essential gcc automake autoconf libtool unzip git
+
+COPY --from=ffmpeg /usr/local /usr/local/
+
+RUN echo "==> Installing Sphinx" && \
+    mkdir -p /sphinx && \
+    cd /sphinx && \
+    git clone https://github.com/cmusphinx/pocketsphinx.git && \
+    cd /sphinx/pocketsphinx && \
+    ./autogen.sh && \
+    ./configure --with-python --with-sphinxbase=/sphinx/sphinxbase && \
     make && \
     make check && \
     make install && \
@@ -22,9 +24,6 @@ RUN echo "==> Updating and installing packages" && \
     rm -rf /var/lib/{apt,dpkg,cache,log} && \
     apt-get remove -y --auto-remove build-essential gcc automake autoconf libtool && \
     apt-get clean
-
-ENV LD_LIBRARY_PATH=/usr/local/lib
-ENV PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
 
 WORKDIR /data
 
