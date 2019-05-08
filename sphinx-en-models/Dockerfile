@@ -1,4 +1,4 @@
-FROM alpine as source
+FROM alpine
 
 # Add english model data from https://sourceforge.net/projects/cmusphinx/files/Acoustic%20and%20Language%20Models/US%20English/
 ADD https://downloads.sourceforge.net/project/cmusphinx/Acoustic%20and%20Language%20Models/US%20English/cmusphinx-en-us-8khz-5.2.tar.gz /models/
@@ -18,9 +18,5 @@ RUN cd /models && \
     rm -rf *.gz
 
 RUN apk del git gzip unzip
-
-FROM scratch
-
-COPY --from=source /models /models
 
 VOLUME [ "/models" ]
