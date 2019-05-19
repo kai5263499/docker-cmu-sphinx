@@ -23,9 +23,6 @@ RUN useradd --create-home --home-dir $HOME pulseaudio \
 	&& usermod -aG audio,pulse,pulse-access pulseaudio \
 	&& chown -R pulseaudio:pulseaudio $HOME
 
-#WORKDIR $HOME
-# USER pulseaudio
-
 WORKDIR /go
 
 ENV GOPATH /go
