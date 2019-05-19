@@ -1,36 +1,31 @@
 FROM jrottenberg/ffmpeg:3.3-alpine AS ffmpeg
-FROM kai5263499/sphinxbase:latest
+FROM debian:sid-slim
 LABEL MAINTAINER="Wes Widner <kai5263499@gmail.com>"
 
-RUN echo "==> Updating and installing packages" && \
-    apt-get update && \
-    apt-get install -y build-essential gcc automake autoconf libtool unzip git
+# Install pulseaudio and pocketsphinx
+RUN apt-get update && apt-get install -y \
+	alsa-utils \
+	libasound2 \
+	libasound2-plugins \
+	pulseaudio \
+	pulseaudio-utils \
+    libportmidi0 libportmidi-dev \
+    ca-certificates \
+    pocketsphinx libpocketsphinx-dev sphinxbase-utils libsphinxbase-dev libsphinxbase3 sphinx-common \
+    curl portaudio19-dev \
+    sox \
+    --no-install-recommends
 
 COPY --from=ffmpeg /usr/local /usr/local/
+COPY default.pa /etc/pulse/default.pa
+COPY client.conf /etc/pulse/client.conf
+COPY daemon.conf /etc/pulse/daemon.conf
 
-RUN echo "==> Installing Sphinx" && \
-    mkdir -p /sphinx && \
-    cd /sphinx && \
-    git clone https://github.com/cmusphinx/pocketsphinx.git && \
-    cd /sphinx/pocketsphinx && \
-    ./autogen.sh && \
-    ./configure --with-python --with-sphinxbase=/sphinx/sphinxbase && \
-    make && \
-    make check && \
-    make install && \
-    echo "==> Verifying Install" && \
-    make installcheck && \
-    echo "==> Cleaning Up" && \
-    rm -rf /var/lib/{apt,dpkg,cache,log} && \
-    apt-get remove -y --auto-remove build-essential gcc automake autoconf libtool && \
-    apt-get clean
+ENV HOME /home/pulseaudio
+RUN useradd --create-home --home-dir $HOME pulseaudio \
+	&& usermod -aG audio,pulse,pulse-access pulseaudio \
+	&& chown -R pulseaudio:pulseaudio $HOME
 
 WORKDIR /data
 
-# 'make install' installs all python modules to this dir.
-# But Ubuntu recognizes only /usr/local/lib/python3.4/dist-packages
-# dir by default. So add this dir to PYTHON_PATH manually.
-ENV PYTHONPATH /usr/local/lib/python3.4/site-packages
-
-VOLUME /sphinx
 VOLUME /data
