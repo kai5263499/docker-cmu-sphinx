@@ -9,10 +9,12 @@ RUN apt-get update && apt-get install -y \
 	libasound2-plugins \
 	pulseaudio \
 	pulseaudio-utils \
-    libportmidi0 libportmidi-dev \
+    libportmidi0 \
+    libportmidi-dev \
     ca-certificates \
     pocketsphinx libpocketsphinx-dev sphinxbase-utils libsphinxbase-dev libsphinxbase3 sphinx-common \
-    curl portaudio19-dev \
+    portaudio19-dev \
+    curl \
     sox \
     --no-install-recommends
 
