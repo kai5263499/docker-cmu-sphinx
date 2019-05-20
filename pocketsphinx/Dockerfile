@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     libportmidi0 \
     libportmidi-dev \
     ca-certificates \
-    pocketsphinx libpocketsphinx-dev sphinxbase-utils libsphinxbase-dev libsphinxbase3 sphinx-common \
+    pocketsphinx libpocketsphinx-dev sphinxbase-utils libsphinxbase-dev libsphinxbase3 sphinx-common pocketsphinx-en-us \
     portaudio19-dev \
     curl \
     sox \
@@ -22,6 +22,7 @@ COPY --from=ffmpeg /usr/local /usr/local/
 COPY default.pa /etc/pulse/default.pa
 COPY client.conf /etc/pulse/client.conf
 COPY daemon.conf /etc/pulse/daemon.conf
+ADD TAR5784.tgz /voice_assistant_models
 
 ENV HOME /home/pulseaudio
 RUN useradd --create-home --home-dir $HOME pulseaudio \
