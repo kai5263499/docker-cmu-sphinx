@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     pocketsphinx libpocketsphinx-dev sphinxbase-utils libsphinxbase-dev libsphinxbase3 sphinx-common pocketsphinx-en-us \
     curl pkg-config portaudio19-dev gcc automake autoconf libtool git make direnv \
-    libespeak-dev libespeak1 espeak-data espeak \
+    libespeak-ng1 libespeak-ng-dev espeak-ng-data espeak-ng \
     --no-install-recommends
 
 COPY default.pa /etc/pulse/default.pa
